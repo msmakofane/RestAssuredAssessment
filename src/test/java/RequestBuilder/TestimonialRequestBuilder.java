@@ -1,46 +1,50 @@
 package RequestBuilder;
 
+import commons.Paths;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
 import payloadBuilder.TestimonialPayload;
 
-import static commons.Paths.BASE_URL;
 import static io.restassured.RestAssured.given;
 
 public class TestimonialRequestBuilder {
-    static String AdminToken;
-    static String usertestimonialId;
 
+   public static String testimonialID;
 
-    public static Response createTestimonial() throws InterruptedException {
-        String title = "title";
-        String content = "content";
-        int rating = 5;
-        boolean isPublic = true;
+    public static Response createTestimonial(String title, String content, int rating, boolean isPublic) {
 
-
-        String apiPath = "/APIDEV/testimonials";
-
-        Response response =  given()
-                .baseUri(BASE_URL)
-                .basePath(apiPath)
+        Response response = given()
+                 .header("Authorization", "Bearer " + Paths.AdminToken) // Uses token from Paths
+                .baseUri(Paths.BASE_URL)
                 .contentType(ContentType.JSON)
                 .accept(ContentType.JSON)
                 .body(TestimonialPayload.userTestimonial(title, content, rating, isPublic))
-                .post()
+                .log().all() // This shows the URL in console - check it!
+                .post("/APIDEV/testimonials") // Path is ONLY here now
+                .then()
+                .extract().response();
+          testimonialID = response.jsonPath().getString("data.Id");
+          System.out.println(STR."Captured testimonialID tumi:\{testimonialID}");
+
+          return response;
+    }
+
+    public static Response updateTestimonial(String id, String title, String content, int rating) {
+
+        return given()
+                .header("Authorization", "Bearer " + Paths.AdminToken)
+                .baseUri(Paths.BASE_URL)
+                .contentType(ContentType.JSON)
+                .accept(ContentType.JSON)
+                // Using the Payload builder to generate the update body
+                .body(TestimonialPayload.updateTestimonial(title, content, rating))
+                .log().all()
+                // The URL pattern: BASE_URL + /APIDEV/testimonials/{id}
+                .put("/APIDEV/testimonials/" + testimonialID)
                 .then()
                 .extract().response();
 
-        usertestimonialId = response.jsonPath().getString("data.Id");
-        AdminToken = response.jsonPath().getString("data.token");
-
-
-        return response;
-
     }
-
-
-
 
 
 
