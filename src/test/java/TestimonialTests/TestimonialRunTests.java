@@ -3,10 +3,12 @@ package TestimonialTests;
 import RequestBuilder.TestimonialRequestBuilder;
 import com.github.javafaker.Faker;
 import io.restassured.response.Response;
+import org.apache.http.client.methods.RequestBuilder;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import static io.restassured.RestAssured.given;
+import static org.hamcrest.CoreMatchers.equalTo;
 
 
 public class TestimonialRunTests {
@@ -58,16 +60,24 @@ public class TestimonialRunTests {
         String newContent = "Updated testimonial content: In progress with assessment";
         int newRating = 5;
 
-        // Call the builder
-
         Response response = TestimonialRequestBuilder.updateTestimonial(idToUpdate, newTitle, newContent, newRating);
-
-        // Logs the full response for debugging
         response.then().log().all();
 
         Assert.assertEquals(response.getStatusCode(), 200);
         Assert.assertEquals(response.jsonPath().getString("data.Title"), newTitle);
     }
+
+    @Test (priority = 4)
+    public void userDeleteTesimonial() {
+        TestimonialRequestBuilder.deleteTestimonial()
+       // RequestBuilder.delete(TestimonialRequestBuilder.testimonialID)
+                .then().log().all()
+                .assertThat()
+                .statusCode(200)
+                .body("success", equalTo(true));
+    }
+
+
 
 
     public void getCoursesSimple() {

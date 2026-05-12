@@ -8,6 +8,7 @@ import payloadBuilder.TestimonialPayload;
 import static commons.Paths.BASE_URL;
 import static io.restassured.RestAssured.given;
 
+
 public class TestimonialRequestBuilder {
 
     public static String userToken;
@@ -62,10 +63,24 @@ public class TestimonialRequestBuilder {
                 .put("/APIDEV/testimonials/" + testimonialID)
                 .then()
                 .extract().response();
+    }
 
-//        static void  beginnerAutomationCourses() {
+        public static Response deleteTestimonial() {
+            return given()
+                    .header("Authorization", "Bearer " + userToken)
+                    .baseUri(Paths.BASE_URL)
+                    .contentType(ContentType.JSON)
+                    .accept(ContentType.JSON)
+                    .log().all()
+                    .delete("/APIDEV/testimonials/" + testimonialID)
+                    .then()
+                    .statusCode(200)
+                    .extract().response();
 
-        //                    .baseUri(BASE_URL)R
+
+        }
+
+
 //
 //
 //
@@ -85,4 +100,4 @@ public class TestimonialRequestBuilder {
     }
 
 
-}
+
