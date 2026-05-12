@@ -5,6 +5,14 @@ import org.json.simple.JSONObject;
 public class TestimonialPayload {
 
 
+    public static JSONObject userLoginPayload(String email, String password) {
+        JSONObject userLogin = new JSONObject(); //instantiate userLogin object of type JSONObject
+        userLogin.put("email", email); //putting key-value pairs in the userLogin object
+        userLogin.put("password", password);
+
+        return userLogin;
+
+    }
 //Constructor
     public static JSONObject userTestimonial(String title, String content, int rating, boolean isPublic) {
         JSONObject userTestimonial = new JSONObject();
@@ -25,6 +33,7 @@ public class TestimonialPayload {
 
         return updateTestimonial;
     }
+
 
 }
 
